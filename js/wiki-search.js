@@ -1,4 +1,4 @@
-var terms, totalRecords;
+var terms, totalRecords, bodyHeight;
 var lastContinue = [];
 var offset = false;
 
@@ -41,6 +41,8 @@ $( document ).ready( function() {
 		setOffsetForPrevious();
 		getWikiResults();							
 	});
+	
+	bodyHeight = $( "body" ).height();
 });
 
 
@@ -89,13 +91,19 @@ getRandomPages = function () {
  */
 displayRandomPages = function( response ) {
 	$( "#results" ).empty();
-	$( "#results" ).append( "Random result:" );
+	$( "#results-label" ).css( "display", "block" );
+	$( "#results-label" ).html( "10 Random results:" );
 	$.each( response.query.pages, function( i, item ){
-		$( "#results" ).append( "<div><a href='http://en.wikipedia.org/wiki/" + encodeURIComponent( item.title ) + " '> " + item.title + "</a>" + item.extract + "</div>");
+		$( "#results" ).append( "<div class='entry'><a href='http://en.wikipedia.org/wiki/" + encodeURIComponent( item.title ) + " '> " + item.title + "</a>" + item.extract + "</div>");
 	});
 	$( "#total" ).css( "display", "none" );
 	$( "#next" ).css( "display", "none" );
 	$( "#previous" ).css( "display", "none" );
+	if( $( "body" ).height() > bodyHeight ) {
+		$( ".site-footer" ).css( "position", "relative" );
+	} else {
+		$( ".site-footer" ).css( "position", "fixed" );
+	}
 }
 
 /**
@@ -118,15 +126,22 @@ function getData( url, data, callback ) {
  */
 function displayData( wikiResults ) {
 	$( "#results" ).empty();
-	$( "#results" ).append( "Results for <b>" + terms + "</b>" );
+	$( "#results-label" ).css( "display", "block" );
+	$( "#results-label" ).html( "1 - 10 from total <span id='total'></span> results for <b>" + terms + "</b>");
 	$.each( wikiResults.query.search, function( i, item ) {
-		$( "#results" ).append( "<div><a href='http://en.wikipedia.org/wiki/" + encodeURIComponent( item.title ) + " '> " + item.title + "</a>" + item.snippet + "</div>");
+		$( "#results" ).append( "<div class='entry'><a href='http://en.wikipedia.org/wiki/" + encodeURIComponent( item.title ) + " '> " + item.title + "</a>" + " " + item.snippet + "</div>");
 	});
 	totalRecords =  wikiResults.query.searchinfo.totalhits;
 	$( "#total" ).css( "display", "inline-block" );
-	$( "#total" ).html( "Total Records: " + totalRecords );
+	$( "#total" ).html( totalRecords );
 	$( "#next" ).css( "display", "inline-block" );
 	$( "#previous" ).css( "display", "inline-block" );
+	var currentBodyHeight = $( "body" ).height();
+	if( currentBodyHeight > bodyHeight ) {
+		$( ".site-footer" ).css( "position", "relative" );
+	} else {
+		$( ".site-footer" ).css( "position", "fixed" );
+	}
 	if( wikiResults.continue ) {
 		lastContinue = wikiResults.continue;
 	} else {
@@ -145,12 +160,29 @@ $( "#srsearch" ).autocomplete ({
 				data: {
 						'action': "opensearch",
 						'format': "json",
-						'search': request.term
+						'search': request.term,
+						'limit': 5
 				},
 				success: function( data ) {
 						response( data[1] );
 				}			
 		});
+	},
+	focus: function(event, ui) {
+		// prevent autocomplete from updating the textbox
+		event.preventDefault();
+		// manually update the textbox
+		$(this).val(ui.item.label);
+	},
+	select: function(event, ui) {
+		// prevent autocomplete from updating the textbox
+		event.preventDefault();
+		// manually update the textbox and hidden field
+		$(this).val(ui.item.label);
+		$("#autocomplete2-value").val(ui.item.value);
+	},
+	'open': function(e, ui) {
+    $('.ui-autocomplete').css('top', $("ul.ui-autocomplete").cssUnit('top')[0] + 2);
 	}
 });
 
