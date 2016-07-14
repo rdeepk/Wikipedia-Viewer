@@ -235,16 +235,13 @@ h1 {
   transition-property: color, background-color;
 }
 
-.hvr-fade:hover,
-.hvr-fade:focus,
-.hvr-fade:active {
+.hvr-fade:hover {
   background-color: #484848;
 	color: #fff;
 }
 
 .entry.hvr-fade:hover,
-.entry.hvr-fade:focus,
-.entry.hvr-fade:active {
+.entry.hvr-fade:focus {
   background-color: #f9f9f9;
 	color: #484848;
 }

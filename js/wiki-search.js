@@ -29,7 +29,8 @@ $( document ).ready( function() {
 		}
 	});
 	
-	$( "#randomSearch" ).click( function() {
+	$( "#randomSearch" ).click( function(e) {
+		e.preventDefault();
 		$( "#srsearch" ).val( "" );
 		getRandomPages();
 	});
