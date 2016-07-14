@@ -46,11 +46,23 @@ $( document ).ready( function() {
 		setRequestOffsetForPrevious();
 		getWikiResults();
 		updateOffsetsForPrevious();
-	});
-	
-	bodyHeight = $( "body" ).height();
+	});	
+	updateBodyHeight();
+	$( window ).on( "resize", updateBodyHeight );
 });
 
+
+/**
+ * @summary Sets the global value for body height and update the footer display.
+ */
+function updateBodyHeight() {
+	bodyHeight = $( "body" ).height();
+	if( bodyHeight < 420 ) {
+		$( ".site-footer" ).css ( "display", "none" );
+	} else {
+		$( ".site-footer" ).css ( "display", "block" );
+	}
+}
 
 /**
  * @summary Reset the elements visibility to default.
