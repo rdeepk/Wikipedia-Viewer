@@ -1,7 +1,7 @@
 var terms, totalRecords, bodyHeight;
 var lastContinue = [];
 var offset = false;
-
+var startLimit = 1, endLimit = 10;
 
 /**
  * @summary Handle different events when document is ready.
@@ -33,23 +33,67 @@ $( document ).ready( function() {
 
 	$( "#next" ).click( function() {
 		offset = true;
-		getWikiResults();							
+		getWikiResults();
+		updateOffsetsForNext();
 	});
 
 	$( "#previous" ).click( function() {
 		offset = true;
-		setOffsetForPrevious();
-		getWikiResults();							
+		setRequestOffsetForPrevious();
+		getWikiResults();
+		updateOffsetsForPrevious();
 	});
 	
 	bodyHeight = $( "body" ).height();
 });
 
+/**
+ * @summary Calculates the next button offsets to be displayec per page and update the globals.
+ */
+function updateOffsetsForNext() {
+	if(startLimit + 10 < totalRecords ) {
+		startLimit += 10;
+	} else {
+		startLimit = 0;
+	}
+	if(endLimit + 10 < totalRecords ) {
+		endLimit += 10;
+	} else if ( endLimit == totalRecords ) {
+		endLimit = 10;
+	} else {
+		endLimit = totalRecords;;	
+	}
+}
+
+/**
+ * @summary Calculates the previous button offsets to be displayec per page and update the globals.
+ */
+function updateOffsetsForPrevious() {
+	if( startLimit !== 1 ) {
+		startLimit -= 10;
+	}
+	if( endLimit == totalRecords ) {
+		endLimit = Math.ceil( totalRecords / 10 ) * 10;
+	} else if( endLimit > 10 ) {
+		endLimit -= 10;
+	}
+}
+
+/**
+ * @summary Reset the display page offsets to default.
+ */
+function resetPageLimits() {
+	startLimit = 1, endLimit = 10;
+}
 
 /**
  * @summary Prepares data for query to wikipedia and triggers request to get Wikipedia entries.
  */
 getWikiResults = function() {
+	if(!offset) {
+		resetPageLimits();
+	}
+	
 	var url = "http://en.wikipedia.org/w/api.php?callback=?";
 	var args = {
 		srsearch: terms,
@@ -127,7 +171,7 @@ function getData( url, data, callback ) {
 function displayData( wikiResults ) {
 	$( "#results" ).empty();
 	$( "#results-label" ).css( "display", "block" );
-	$( "#results-label" ).html( "1 - 10 from total <span id='total'></span> results for <b>" + terms + "</b>");
+	$( "#results-label" ).html( startLimit + " - " + endLimit + " from total <span id='total'></span> results for <b>" + terms + "</b>");
 	$.each( wikiResults.query.search, function( i, item ) {
 		$( "#results" ).append( "<div class='entry'><a href='http://en.wikipedia.org/wiki/" + encodeURIComponent( item.title ) + " '> " + item.title + "</a>" + " " + item.snippet + "</div>");
 	});
@@ -199,7 +243,7 @@ $( "#srsearch" ).autocomplete ({
 /**
  * @summary Calculates the offset to be set with previous page load and update the globals.
  */
- function setOffsetForPrevious() {
+ function setRequestOffsetForPrevious() {
 	var currentOffset;
 	if( lastContinue["sroffset"] ) {
 		currentOffset = lastContinue["sroffset"];
