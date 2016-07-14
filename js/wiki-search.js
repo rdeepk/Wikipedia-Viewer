@@ -143,7 +143,7 @@ getWikiResults = function() {
 		resetPageLimits();
 	}
 	
-	var url = "http://en.wikipedia.org/w/api.php?callback=?";
+	var url = "https://en.wikipedia.org/w/api.php?callback=?";
 	var args = {
 		srsearch: terms,
 		action: "query",
@@ -163,7 +163,7 @@ getWikiResults = function() {
  * @summary Prepares data for query to get random pages and triggers request.
  */
 getRandomPages = function () {
-	var url = "http://en.wikipedia.org/w/api.php?callback=?";
+	var url = "https://en.wikipedia.org/w/api.php?callback=?";
 	var data = {
 		action: "query",
 		generator: "random",
@@ -236,7 +236,7 @@ function displayData( wikiResults ) {
 $( "#srsearch" ).autocomplete ({
 	source: function( request, response ) {
 		$.ajax ({
-				url: "http://en.wikipedia.org/w/api.php",
+				url: "https://en.wikipedia.org/w/api.php",
 				dataType: "jsonp",
 				data: {
 						'action': "opensearch",

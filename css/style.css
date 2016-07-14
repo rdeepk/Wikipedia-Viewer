@@ -168,19 +168,15 @@ h1 {
 	font-weight: 600;
 }
 
-#next:active,
-#next:visited,
-#previous:visited,
-#previous:active {
-	color: #337ab7;
-}
-
 #next:hover,
-#next:focus,
-#previous:hover,
-#previous:focus {
+#previous:hover {
 	text-decoration: none;
 	color: #ff3333;
+}
+
+#next:focus,
+#previous:focus {
+	text-decoration: none;
 }
 
 #results {
