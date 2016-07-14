@@ -23,6 +23,9 @@ $( document ).ready( function() {
 		}
 		if( terms ) {
 			getWikiResults();
+		} else {
+			setDefaultDisplaySettings();
+			setFooterPosition();
 		}
 	});
 	
@@ -47,6 +50,38 @@ $( document ).ready( function() {
 	bodyHeight = $( "body" ).height();
 });
 
+
+/**
+ * @summary Reset the elements visibility to default.
+ */
+function setDefaultDisplaySettings() {
+	$( "#results" ).empty();
+	$( "#results-label" ).css( "display", "none" );
+	$( "#next" ).css( "display", "none" );
+	$( "#previous" ).css( "display", "none" );
+}
+
+/**
+ * @summary Display the hidden elements meant for results.
+ */
+function setDisplayForResults() {
+	$( "#results" ).empty();
+	$( "#results-label" ).css( "display", "block" );
+	$( "#next" ).css( "display", "inline-block" );
+	$( "#previous" ).css( "display", "inline-block" );
+}
+
+/**
+ * @summary Calculates the length of body and toggles the position to fixed or relative.
+ */
+function setFooterPosition() {
+	if( $( "body" ).height() > bodyHeight ) {
+		$( ".site-footer" ).css( "position", "relative" );
+	} else {
+		$( ".site-footer" ).css( "position", "fixed" );
+	}
+}
+
 /**
  * @summary Calculates the next button offsets to be displayec per page and update the globals.
  */
@@ -54,7 +89,7 @@ function updateOffsetsForNext() {
 	if(startLimit + 10 < totalRecords ) {
 		startLimit += 10;
 	} else {
-		startLimit = 0;
+		startLimit = 1;
 	}
 	if(endLimit + 10 < totalRecords ) {
 		endLimit += 10;
@@ -73,7 +108,8 @@ function updateOffsetsForPrevious() {
 		startLimit -= 10;
 	}
 	if( endLimit == totalRecords ) {
-		endLimit = Math.ceil( totalRecords / 10 ) * 10;
+		var roundedNum = Math.ceil( totalRecords / 10 ) * 10;
+		endLimit = roundedNum > totalRecords ? roundedNum - 10 : roundedNum;
 	} else if( endLimit > 10 ) {
 		endLimit -= 10;
 	}
@@ -90,7 +126,7 @@ function resetPageLimits() {
  * @summary Prepares data for query to wikipedia and triggers request to get Wikipedia entries.
  */
 getWikiResults = function() {
-	if(!offset) {
+	if( !offset ) {
 		resetPageLimits();
 	}
 	
@@ -103,7 +139,7 @@ getWikiResults = function() {
 	}
 	if(( offset ) && !jQuery.isEmptyObject ( lastContinue )) {
 		for( key in lastContinue ){
-			args[key] = lastContinue[key];
+			args[ key ] = lastContinue[ key ];
 		}
 		offset = false;
 	}
@@ -123,6 +159,7 @@ getRandomPages = function () {
 		grnnamespace: 0,
 		prop: "extracts",
 		exlimit: 10,
+		exchars: 500,
 		exintro: true
 	};
 	getData( url, data, displayRandomPages );
@@ -134,20 +171,13 @@ getRandomPages = function () {
  * @param object $response Response object from request to MediaWiki.
  */
 displayRandomPages = function( response ) {
-	$( "#results" ).empty();
+	setDefaultDisplaySettings();
 	$( "#results-label" ).css( "display", "block" );
 	$( "#results-label" ).html( "10 Random results:" );
 	$.each( response.query.pages, function( i, item ){
-		$( "#results" ).append( "<div class='entry'><a href='http://en.wikipedia.org/wiki/" + encodeURIComponent( item.title ) + " '> " + item.title + "</a>" + item.extract + "</div>");
+		$( "#results" ).append( "<div class='entry hvr-fade'><a href='http://en.wikipedia.org/wiki/" + encodeURIComponent( item.title ) + " '> " + item.title + "</a>" + item.extract + "</div>");
 	});
-	$( "#total" ).css( "display", "none" );
-	$( "#next" ).css( "display", "none" );
-	$( "#previous" ).css( "display", "none" );
-	if( $( "body" ).height() > bodyHeight ) {
-		$( ".site-footer" ).css( "position", "relative" );
-	} else {
-		$( ".site-footer" ).css( "position", "fixed" );
-	}
+	setFooterPosition();
 }
 
 /**
@@ -169,23 +199,17 @@ function getData( url, data, callback ) {
  * @param object $wikiResults Result object after fetching data from MediaWiki Api.
  */
 function displayData( wikiResults ) {
-	$( "#results" ).empty();
-	$( "#results-label" ).css( "display", "block" );
+	setDisplayForResults();
+	totalRecords =  wikiResults.query.searchinfo.totalhits;
+	if( totalRecords < 10 ) {
+		endLimit = totalRecords;
+	}
 	$( "#results-label" ).html( startLimit + " - " + endLimit + " from total <span id='total'></span> results for <b>" + terms + "</b>");
 	$.each( wikiResults.query.search, function( i, item ) {
-		$( "#results" ).append( "<div class='entry'><a href='http://en.wikipedia.org/wiki/" + encodeURIComponent( item.title ) + " '> " + item.title + "</a>" + " " + item.snippet + "</div>");
+		$( "#results" ).append( "<div class='entry hvr-fade'><a href='http://en.wikipedia.org/wiki/" + encodeURIComponent( item.title ) + " '> " + item.title + "</a><p>" + item.snippet + " ..." + "</p></div>");
 	});
-	totalRecords =  wikiResults.query.searchinfo.totalhits;
-	$( "#total" ).css( "display", "inline-block" );
 	$( "#total" ).html( totalRecords );
-	$( "#next" ).css( "display", "inline-block" );
-	$( "#previous" ).css( "display", "inline-block" );
-	var currentBodyHeight = $( "body" ).height();
-	if( currentBodyHeight > bodyHeight ) {
-		$( ".site-footer" ).css( "position", "relative" );
-	} else {
-		$( ".site-footer" ).css( "position", "fixed" );
-	}
+	setFooterPosition();
 	if( wikiResults.continue ) {
 		lastContinue = wikiResults.continue;
 	} else {
@@ -213,20 +237,20 @@ $( "#srsearch" ).autocomplete ({
 		});
 	},
 	focus: function(event, ui) {
-		// prevent autocomplete from updating the textbox
 		event.preventDefault();
-		// manually update the textbox
 		$(this).val(ui.item.label);
 	},
 	select: function(event, ui) {
-		// prevent autocomplete from updating the textbox
 		event.preventDefault();
-		// manually update the textbox and hidden field
 		$(this).val(ui.item.label);
 		$("#autocomplete2-value").val(ui.item.value);
 	},
-	'open': function(e, ui) {
+	open: function(e, ui) {
     $('.ui-autocomplete').css('top', $("ul.ui-autocomplete").cssUnit('top')[0] + 2);
+		$('ul.ui-autocomplete').hide().fadeIn();
+	},
+	close: function () {
+		$('ul.ui-autocomplete').show().fadeOut();
 	}
 });
 

@@ -1,0 +1,250 @@
+/* Base Styles
+--------------------------------------------- */
+html {
+	height: 100%;
+}
+
+body {
+	min-height: 100%;
+	position: relative;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 14px;
+	line-height: 1.5;
+	color: #484848;
+}
+
+h1 {
+	font-size: 2.875em;
+	font-weight: 800;
+	line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+	body {
+		font-size: 16px;
+	}
+	
+	h1 {
+		line-height: 2;
+	}
+}
+
+
+/* Site Header
+--------------------------------------------- */
+.site-header {
+	background: url(../images/Wikipedia-logo.png) center 30px no-repeat;
+	text-align: center;
+	background-color: #fff;
+}
+
+.site-header a {
+	display: inline-block;
+	padding: 10px 15px;
+	border: 1px solid #ccc;
+	margin-bottom: 1em;
+	border-radius: 4px;
+	color: #484848;
+	font-size: 1.25em;
+	font-weight: 300;
+}
+
+.site-header a:hover,
+.site-header a:focus {
+	text-decoration: none;
+	outline: none;
+}
+
+.site-header p {
+	position: relative;
+	top: -15px;
+}
+
+@media (min-width: 768px) {
+	.site-header a {
+		padding: 1em 1.25em;
+	}
+	
+	.site-header p {
+		top: -30px;
+	}
+}
+
+
+/* Search Box
+--------------------------------------------- */
+.form-control {
+	height: 54px;
+	padding: 0.333em 0.666em;
+	font-size: 1.123em;
+	border: 1px solid #ccc;
+	box-shadow: none;
+	border-radius: 4px;
+	width: 100%;
+}
+
+.form-control:focus {
+	border-color: #ccc;
+	outline: 0;
+	box-shadow: none;
+}
+
+.form-group {
+	margin-bottom: 0;
+}
+
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active, 
+.ui-autocomplete, .ui-autocomplete:hover, 
+.ui-menu-item, .ui-menu-item:hover,
+.ui-menu-item a, .ui-menu-item a:hover,
+.ui-widget-content .ui-state-focus,
+.ui-widget-header .ui-state-focus,
+.ui-widget-content .ui-state-hover,
+.ui-widget-header .ui-state-hover,
+.ui-menu .ui-menu-item a.ui-state-focus,
+.ui-menu .ui-menu-item a.ui-state-active,
+.ui-menu .ui-menu-item a {
+	background-color: #f5f5f5; 
+	padding: 0;
+	margin: 0;
+	display: block;
+	border: 0;
+	border-collapse: collapse;
+}
+
+.ui-menu,
+.ui-autocomplete:hover {
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+.ui-menu .ui-menu-item {
+	padding: 0.8em 0.96em;
+	font-size: 0.7em;
+	line-height: 1;
+	border-bottom: 1px solid #ccc;
+	color: #484848;
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 400;
+	background-color: #f5f5f5;
+}
+
+.ui-menu .ui-menu-item:last-child {
+	border-bottom: none;
+}
+
+.ui-menu-item:hover,
+.ui-autocomplete:hover {
+	background-color: #fff;
+}
+
+
+/* Content Section
+--------------------------------------------- */
+#results-label {
+	display: none;
+	margin: 1.875em 0.312em 0;
+	margin-bottom: 0;
+}
+
+.pages {
+	margin-top: 0.5em;
+	margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+	.pages {
+		margin-top: 1.875em;
+		text-align: right;
+	}
+}
+
+#next,
+#previous {
+	display: none;
+	margin: 0 0.312em;
+	font-weight: 600;
+}
+
+#next:active,
+#next:visited,
+#previous:visited,
+#previous:active {
+	color: #337ab7;
+}
+
+#next:hover,
+#next:focus,
+#previous:hover,
+#previous:focus {
+	text-decoration: none;
+	color: #ff3333;
+}
+
+#results {
+	background: rgba(255,255,255,0.8);
+}
+
+#results .entry {
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	margin: 0.312em 0;
+	padding: 1.25em 1.875em;
+	width: 100%;
+}
+
+.entry a {
+	font-weight: 600;
+}
+
+.entry a:hover,
+.entry a:focus {
+	text-decoration: none;
+	color: #ff3333;
+}
+
+
+/* Site Footer
+--------------------------------------------- */
+.site-footer {
+	padding: 3.125em 0;
+	position: fixed;
+	width: 100%;
+	bottom: 0;
+	text-align: center;
+}
+
+
+/* Fade Transition
+--------------------------------------------- */
+.hvr-fade {
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-property: color, background-color;
+  transition-property: color, background-color;
+}
+
+.hvr-fade:hover,
+.hvr-fade:focus,
+.hvr-fade:active {
+  background-color: #484848;
+	color: #fff;
+}
+
+.entry.hvr-fade:hover,
+.entry.hvr-fade:focus,
+.entry.hvr-fade:active {
+  background-color: #f9f9f9;
+	color: #484848;
+}
